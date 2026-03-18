@@ -3,42 +3,25 @@ name: Publish to npm
 on:
   push:
     tags:
-      - 'v*'  # 推送 v 开头的标签时触发，如 v1.0.0
+      - 'v*'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # 用于 npm 发布认证
+      id-token: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 8
-
-      - name: Install dependencies
-        run: |
-          # 检查锁文件是否存在，如果不存在则生成
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "锁文件存在，使用 --frozen-lockfile"
-            pnpm install --frozen-lockfile
-          else
-            echo "锁文件不存在，生成新的锁文件"
-            pnpm install
-          fi
-
-      - name: Publish to npm
-        run: pnpm publish --no-git-checks --access public
+      - run: pnpm install
+      - run: pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
