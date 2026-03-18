@@ -1,0 +1,35 @@
+# 排除不需要发布到 npm 的文件和目录
+
+# GitHub 相关
+.github/
+.gitignore
+
+# 测试和开发文件
+test*
+debug*
+*.test.js
+*.spec.js
+
+# 配置文件
+@karinjs/
+config/
+logs/
+
+# 环境文件
+.env
+.env.*
+.npmrc
+
+# 文档
+CHANGELOG.md
+CONTRIBUTING.md
+PUBLISH.md
+RELEASE.md
+
+# 构建脚本
+scripts/
+start-dev.*
+dev-start.*
+
+# 其他
+pnpm-lock.yaml
