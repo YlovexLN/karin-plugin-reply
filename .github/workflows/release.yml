@@ -28,7 +28,15 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          # 检查锁文件是否存在，如果不存在则生成
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "锁文件存在，使用 --frozen-lockfile"
+            pnpm install --frozen-lockfile
+          else
+            echo "锁文件不存在，生成新的锁文件"
+            pnpm install
+          fi
 
       - name: Publish to npm
         run: pnpm publish --no-git-checks --access public

@@ -22,7 +22,7 @@
 ## 🚀 快速开始
 
 1. **安装插件**
-   推荐在 WebUI 中安装，也可以在命令行中安装。
+   推荐在 **WebUI** 中安装，也可以在命令行中安装。
 
    ```bash
    pnpm install karin-plugin-reply
