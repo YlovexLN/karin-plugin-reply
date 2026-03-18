@@ -1,37 +1,47 @@
-# karin 模板仓库
+# 🎯 karin-plugin-reply
 
+> Karin 自定义关键词回复插件 | 支持群聊/私聊 | 群组专属规则
 
-## 克隆仓库
+[![NPM Version](https://img.shields.io/npm/v/karin-plugin-reply)](https://www.npmjs.com/package/karin-plugin-reply)
+[![GitHub License](https://img.shields.io/github/license/YlovexLN/karin-plugin-reply)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/issues)
+[![GitHub Actions](https://github.com/YlovexLN/karin-plugin-reply/actions/workflows/ci.yml/badge.svg)](https://github.com/YlovexLN/karin-plugin-reply/actions)
 
-> 需要注意 请先安装`karin`哦~
+一个功能强大的 Karin 关键词回复插件，支持精确匹配、包含匹配、正则匹配三种模式，可为不同群组配置专属回复规则。
 
-打开[模板仓库](https://github.com/KarinJS/karin-plugin-template)
+## ✨ 特性
 
-点击`Use this template`或`使用此模板`按钮，创建自己的仓库。
-![202404121412587](https://cdn.jsdelivr.net/gh/Zyy955/imgs/img/202404121412587.png)
+- ✅ **多场景支持**：群聊、私聊均可使用
+- ✅ **三种匹配模式**：精确匹配、包含匹配、正则匹配
+- ✅ **群组专属规则**：为特定群组配置独立关键词
+- ✅ **@机器人条件**：可配置是否需要@机器人才能触发
+- ✅ **热重载**：修改配置无需重启插件
+- ✅ **优先级规则**：群组规则优先于全局规则
 
-填写仓库名称，描述，选择是否公开。
-![202404121414580](https://cdn.jsdelivr.net/gh/Zyy955/imgs/img/202404121414580.png)
+## 🚀 快速开始
 
-```bash
-# 请改成你自己的仓库 ！！！请单独一个文件夹 不需要放到plugins中了
-git clone https://github.com/karinjs/karin-plugin-template.git
-```
+1. **安装插件**
+   推荐在 WebUI 中安装，也可以在命令行中安装。
 
-## 安装依赖
+   ```bash
+   pnpm install karin-plugin-reply
+   ```
 
-```bash
-pnpm i
-```
+## 🤝 贡献
 
-## 初始化
+<a href="https://github.com/YlovexLN/karin-plugin-reply/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=YlovexLN/karin-plugin-reply" />
+</a>
 
-> `pnpm run init` 会自动生成一个`.pnpmfile.cjs`文件，请删除这个文件
+## ❤️ 鸣谢
 
-```bash
-pnpm run init
-```
+- [Karin](https://github.com/Karinjs/Karin) - 即时通讯应用机器人框架
 
-```bash
-pnpm dev
-```
+## 📄 许可证
+
+本项目采用 GPL-3.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date)](https://star-history.com/#YlovexLN/karin-plugin-reply&Date)

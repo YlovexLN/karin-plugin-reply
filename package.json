@@ -1,16 +1,25 @@
 {
-  "name": "karin-plugin-template",
+  "name": "karin-plugin-reply",
   "version": "0.0.1",
-  "description": "karin plugin template",
-  "homepage": "https://github.com/KarinJS/karin-plugin-template",
+  "description": "Karin 自定义关键词回复插件，支持群聊/私聊，支持群组专属规则",
+  "keywords": [
+    "karin",
+    "karin-plugin",
+    "qq-bot",
+    "keyword-reply",
+    "chatbot",
+    "automation"
+  ],
+  "homepage": "https://github.com/YlovexLN/karin-plugin-reply",
   "bugs": {
-    "url": "https://github.com/KarinJS/karin-plugin-template/issues"
+    "url": "https://github.com/YlovexLN/karin-plugin-reply/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KarinJS/karin-plugin-template.git"
+    "url": "git+https://github.com/YlovexLN/karin-plugin-reply.git"
   },
-  "author": "Lain",
+  "author": "YlovexLN <ylovexln@example.com>",
+  "license": "GPL-3.0",
   "type": "module",
   "main": "lib/index.js",
   "scripts": {
@@ -34,7 +43,6 @@
     ],
     "files": [
       "config",
-      "data",
       "resources"
     ],
     "include": [
@@ -43,6 +51,7 @@
     "exclude": [
       "lib/**/*",
       "@karinjs/**/*"
-    ]
+    ],
+    "web": "./lib/web.config.js"
   }
 }
