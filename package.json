@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/YlovexLN/karin-plugin-reply.git"
   },
-  "author": "YlovexLN <ylovexln@example.com>",
+  "author": "YlovexLN <ylovexln@foxmail.com>",
   "license": "GPL-3.0",
   "type": "module",
   "main": "lib/index.js",
