@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # 用于创建 GitHub Release
-      id-token: write   # 用于 OIDC（可选，见下文）
+      id-token: write   # 可选（如果你用 OIDC 发布 npm）
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 必须获取完整历史和所有 tags
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -32,27 +32,36 @@ jobs:
         run: pnpm install
 
       # ==========================
+      # 📝 使用 git-cliff 生成 Changelog（基于 cliff.toml）
+      # ==========================
+      - name: Generate changelog with git-cliff
+        uses: orhun/git-cliff-action@v2
+        with:
+          config: cliff.toml
+          args: --latest --strip header
+        env:
+          OUTPUT: ./RELEASE_BODY.md
+
+      # ==========================
       # 发布到 npm
       # ==========================
       - name: Publish to npm
         run: pnpm publish --no-git-checks --access public
         env:
-          # 方式 A：使用 NPM_TOKEN（适合首次发布或未启用 OIDC）
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-          # 方式 B：如果你已启用 npm Trusted Publishing，改用下面这行（注释掉上面）：
+          # 如果你启用了 npm Trusted Publishing，可改用：
           # NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ==========================
-      # 📝 创建 GitHub Release (含自动更新日志)
+      # 🚀 创建 GitHub Release，使用自定义日志
       # ==========================
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
-          generate_release_notes: true  # 🔑 关键：自动生成更新日志
-          draft: false                  # 直接发布，不存为草稿
-          prerelease: false             # 除非是预发布版本，否则设为 false
+          body_path: ./RELEASE_BODY.md  # 👈 关键：使用 git-cliff 生成的内容
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
