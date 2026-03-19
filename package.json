@@ -26,7 +26,10 @@
     "app": "karin start",
     "dev": "karin dev",
     "init": "karin init",
-    "start": "karin start"
+    "start": "karin start",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
