@@ -1,6 +1,6 @@
 {
   "name": "karin-plugin-reply",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Karin 自定义关键词回复插件，支持群聊/私聊，支持群组专属规则",
   "keywords": [
     "karin",
@@ -26,9 +26,12 @@
     "app": "karin start",
     "dev": "karin dev",
     "init": "karin init",
-    "start": "karin start"
+    "start": "karin start",
+    "publish:github": "node scripts/publish-to-github.js",
+    "publish:all": "pnpm publish --no-git-checks --access public && npm run publish:github"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "neostandard": "^0.12.0"
   },
   "peerDependencies": {
@@ -53,5 +56,8 @@
       "@karinjs/**/*"
     ],
     "web": "./lib/web.config.js"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
