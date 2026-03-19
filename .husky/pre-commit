@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 同步版本号到 web.config.js
+node scripts/sync-version.js

@@ -28,8 +28,10 @@
     "init": "karin init",
     "start": "karin start",
     "changeset": "changeset",
-    "version": "changeset version",
-    "release": "changeset publish"
+    "version": "changeset version && node scripts/sync-version.js",
+    "release": "changeset publish",
+    "sync-version": "node scripts/sync-version.js",
+    "setup:husky": "node scripts/setup-husky.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
