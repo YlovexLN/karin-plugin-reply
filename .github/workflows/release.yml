@@ -91,9 +91,34 @@ jobs:
         if: steps.check_version.outputs.should_publish == 'true'
         run: |
           echo "🚀 Publishing to GitHub Packages..."
-          npm run publish:github
+          
+          # 读取当前 package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          
+          echo "Package: $PACKAGE_NAME@$CURRENT_VERSION"
+          
+          # 创建临时目录和修改后的 package.json
+          mkdir -p /tmp/gh-publish
+          cp -r . /tmp/gh-publish/
+          cd /tmp/gh-publish
+          
+          # 修改包名为 GitHub Packages 格式
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+            pkg.name = '@ylovexln/' + pkg.name;
+            pkg.publishConfig = { registry: 'https://npm.pkg.github.com/' };
+            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
+            console.log('Modified package name to:', pkg.name);
+          "
+          
+          # 发布到 GitHub Packages
+          pnpm publish --no-git-checks --registry=https://npm.pkg.github.com/
+          
+          echo "✅ Successfully published to GitHub Packages!"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ==========================
       # 打包 npm 包

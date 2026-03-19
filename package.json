@@ -26,9 +26,7 @@
     "app": "karin start",
     "dev": "karin dev",
     "init": "karin init",
-    "start": "karin start",
-    "publish:github": "node scripts/publish-to-github.js",
-    "publish:all": "pnpm publish --no-git-checks --access public && npm run publish:github"
+    "start": "karin start"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
