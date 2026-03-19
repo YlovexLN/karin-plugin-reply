@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
+          # 设置 npm 认证
+          scope: '@ylovexln'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -30,6 +32,15 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      # ==========================
+      # 设置 npm 认证（CI 专用）
+      # ==========================
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
+          echo "@ylovexln:registry=https://npm.pkg.github.com/" >> ~/.npmrc
 
       # ==========================
       # 📝 使用 git-cliff 生成 Changelog（基于 cliff.toml）
@@ -67,14 +78,39 @@ jobs:
       # ==========================
       - name: Publish to npm
         if: steps.check_version.outputs.should_publish == 'true'
-        run: pnpm publish --no-git-checks --access public
+        run: |
+          echo "🚀 Publishing to npm registry..."
+          pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # 如果你启用了 npm Trusted Publishing，可改用：
-          # NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ==========================
-      # 🚀 创建 GitHub Release，使用自定义日志
+      # 发布到 GitHub Packages
+      # ==========================
+      - name: Publish to GitHub Packages
+        if: steps.check_version.outputs.should_publish == 'true'
+        run: |
+          echo "🚀 Publishing to GitHub Packages..."
+          npm run publish:github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ==========================
+      # 打包 npm 包
+      # ==========================
+      - name: Pack npm package
+        if: steps.check_version.outputs.should_publish == 'true'
+        run: |
+          echo "📦 Packing npm package..."
+          pnpm pack
+          # 获取包文件名
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package: $PACKAGE_NAME@$PACKAGE_VERSION"
+          ls -la *.tgz
+
+      # ==========================
+      # 🚀 创建 GitHub Release，使用自定义日志并附加 npm 包
       # ==========================
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -82,6 +118,8 @@ jobs:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: ./RELEASE_BODY.md  # 👈 关键：使用 git-cliff 生成的内容
+          files: |
+            *.tgz
           draft: false
           prerelease: false
         env:
