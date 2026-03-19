@@ -35,7 +35,7 @@ jobs:
       # 📝 使用 git-cliff 生成 Changelog（基于 cliff.toml）
       # ==========================
       - name: Generate changelog with git-cliff
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         with:
           config: cliff.toml
           args: --latest --strip header
