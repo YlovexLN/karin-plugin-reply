@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
+      new_version: ${{ steps.update_version.outputs.new_version }}
     
     steps:
       - name: Checkout
@@ -45,6 +46,7 @@ jobs:
           fi
 
       - name: Update version and sync to web.config.js
+        id: update_version
         if: steps.changesets.outputs.hasChangesets == 'true'
         run: |
           # 配置 git
@@ -74,7 +76,34 @@ jobs:
           git push origin "v${NEW_VERSION}"
           
           echo "✅ Version updated to v${NEW_VERSION}"
-          echo "published=true" >> $GITHUB_OUTPUT
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Setup npm authentication
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm
+        id: publish
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        continue-on-error: true
+        run: |
+          echo "🚀 Publishing to npm registry..."
+          
+          # 获取当前版本
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # 检查 npm 上是否已存在该版本
+          if npm view karin-plugin-reply@$CURRENT_VERSION version >/dev/null 2>&1; then
+            echo "⚠️ 版本 $CURRENT_VERSION 已存在于 npm，跳过发布"
+            exit 0
+          fi
+          
+          pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release:
     name: GitHub Release
@@ -109,12 +138,20 @@ jobs:
         env:
           OUTPUT: ./RELEASE_BODY.md
 
+      - name: Pack npm package
+        run: |
+          echo "📦 Packing npm package..."
+          pnpm pack
+          ls -la *.tgz
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Release ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
+          name: Release v${{ needs.version.outputs.new_version }}
+          tag_name: v${{ needs.version.outputs.new_version }}
           body_path: ./RELEASE_BODY.md
+          files: |
+            *.tgz
           draft: false
           prerelease: false
         env:
