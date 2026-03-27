@@ -1,4 +1,4 @@
-name: GitHub Release
+name: Publish to npm and create GitHub Release
 
 on:
   push:
@@ -6,20 +6,24 @@ on:
       - 'v*'  # 触发条件：推送 v 开头的 tag，如 v0.1.0
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # 用于创建 GitHub Release
+      id-token: write   # 可选（如果你用 OIDC 发布 npm）
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 必须获取完整历史和所有 tags
+          fetch-depth: 0  # 必须获取完整历史 and 所有 tags
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+          # 设置 npm 认证
+          scope: '@ylovexln'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -28,6 +32,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      # ==========================
+      # 设置 npm 认证（CI 专用）
+      # ==========================
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
 
       # ==========================
       # 📝 使用 git-cliff 生成 Changelog（基于 cliff.toml）
@@ -41,7 +52,52 @@ jobs:
           OUTPUT: ./RELEASE_BODY.md
 
       # ==========================
-      # 🚀 创建 GitHub Release，使用自定义日志
+      # 检查版本是否已发布
+      # ==========================
+      - name: Check if version already published
+        id: check_version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+          
+          # 尝试获取已发布的版本
+          PUBLISHED_VERSION=$(npm view karin-plugin-reply@$CURRENT_VERSION version 2>/dev/null || echo "")
+          
+          if [ -z "$PUBLISHED_VERSION" ]; then
+            echo "Version $CURRENT_VERSION not published yet"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version $CURRENT_VERSION already published, skipping"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          fi
+
+      # ==========================
+      # 发布到 npm（仅在版本未发布时）
+      # ==========================
+      - name: Publish to npm
+        if: steps.check_version.outputs.should_publish == 'true'
+        continue-on-error: true
+        run: |
+          echo "🚀 Publishing to npm registry..."
+          pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # ==========================
+      # 打包 npm 包
+      # ==========================
+      - name: Pack npm package
+        run: |
+          echo "📦 Packing npm package..."
+          pnpm pack
+          # 获取包文件名
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package: $PACKAGE_NAME@$PACKAGE_VERSION"
+          ls -la *.tgz
+
+      # ==========================
+      # 🚀 创建 GitHub Release，使用自定义日志并附加 npm 包
       # ==========================
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -49,6 +105,8 @@ jobs:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: ./RELEASE_BODY.md  # 👈 关键：使用 git-cliff 生成的内容
+          files: |
+            *.tgz
           draft: false
           prerelease: false
         env:
