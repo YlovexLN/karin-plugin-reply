@@ -29,6 +29,7 @@
     "start": "karin start",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-version.js",
+    "release": "changeset publish",
     "sync-version": "node scripts/sync-version.js",
     "setup:husky": "node scripts/setup-husky.js"
   },
