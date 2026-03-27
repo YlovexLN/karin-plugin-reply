@@ -3,7 +3,7 @@
 > Karin 自定义关键词回复插件 | 支持群聊/私聊 | 群组专属规则 | Web UI 配置
 
 [![NPM Version](https://img.shields.io/npm/v/karin-plugin-reply)](https://www.npmjs.com/package/karin-plugin-reply)
-[![GitHub License](https://img.shields.io/github/license/YlovexLN/karin-plugin-reply)](LICENSE)
+[![GitHub License](https://img.shields.io/github/license/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/blob/main/LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/issues)
 [![GitHub Actions](https://github.com/YlovexLN/karin-plugin-reply/actions/workflows/ci.yml/badge.svg)](https://github.com/YlovexLN/karin-plugin-reply/actions)
@@ -32,9 +32,7 @@ pnpm install karin-plugin-reply
 
 ## 🤝 贡献
 
-<a href="https://github.com/YlovexLN/karin-plugin-reply/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=YlovexLN/karin-plugin-reply" />
-</a>
+[![Contributors](https://contrib.rocks/image?repo=YlovexLN/karin-plugin-reply&max=1000)](https://github.com/YlovexLN/karin-plugin-reply/graphs/contributors)
 
 ## ❤️ 鸣谢
 
@@ -42,8 +40,14 @@ pnpm install karin-plugin-reply
 
 ## 📄 许可证
 
-本项目采用 GPL-3.0 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+本项目采用 GPL-3.0 许可证 - 查看 [LICENSE](https://github.com/YlovexLN/karin-plugin-reply/blob/main/LICENSE) 文件了解详情。
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date)](https://star-history.com/#YlovexLN/karin-plugin-reply&Date)
+<a href="https://www.star-history.com/#YlovexLN/karin-plugin-reply&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date" />
+ </picture>
+</a>
