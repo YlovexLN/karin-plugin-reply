@@ -44,10 +44,4 @@ pnpm install karin-plugin-reply
 
 ## ⭐ Star History
 
-<a href="https://www.star-history.com/#YlovexLN/karin-plugin-reply&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=YlovexLN/karin-plugin-reply&type=Date" />
- </picture>
-</a>
+[![Star History Chart](https://api.star-history.com/image?repos=YlovexLN/karin-plugin-reply&type=date&legend=top-left)](https://www.star-history.com/?repos=YlovexLN%2Fkarin-plugin-reply&type=date&legend=top-left)
