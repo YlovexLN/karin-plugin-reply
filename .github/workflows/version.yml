@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
-      published: ${{ steps.publish.outputs.published }}
     
     steps:
       - name: Checkout
@@ -77,55 +76,6 @@ jobs:
           echo "✅ Version updated to v${NEW_VERSION}"
           echo "published=true" >> $GITHUB_OUTPUT
 
-      - name: Setup npm authentication
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
-          echo "@ylovexln:registry=https://npm.pkg.github.com/" >> ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish to npm
-        if: steps.changesets.outputs.hasChangesets == 'true' && steps.publish.outputs.published != 'true'
-        run: |
-          echo "🚀 Publishing to npm registry..."
-          pnpm publish --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish to GitHub Packages
-        if: steps.changesets.outputs.hasChangesets == 'true' && steps.publish.outputs.published != 'true'
-        run: |
-          echo "🚀 Publishing to GitHub Packages..."
-          
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          
-          echo "Package: $PACKAGE_NAME@$CURRENT_VERSION"
-          
-          # 创建临时目录
-          mkdir -p /tmp/gh-publish
-          cp -r . /tmp/gh-publish/
-          cd /tmp/gh-publish
-          
-          # 修改包名为 GitHub Packages 格式
-          node -e "
-            const fs = require('fs');
-            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-            pkg.name = '@ylovexln/' + pkg.name;
-            pkg.publishConfig = { registry: 'https://npm.pkg.github.com/' };
-            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
-            console.log('Modified package name to:', pkg.name);
-          "
-          
-          # 发布到 GitHub Packages
-          pnpm publish --no-git-checks --registry=https://npm.pkg.github.com/
-          
-          echo "✅ Successfully published to GitHub Packages!"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release:
     name: GitHub Release
     needs: version
@@ -159,20 +109,12 @@ jobs:
         env:
           OUTPUT: ./RELEASE_BODY.md
 
-      - name: Pack npm package
-        run: |
-          echo "📦 Packing npm package..."
-          pnpm pack
-          ls -la *.tgz
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: ./RELEASE_BODY.md
-          files: |
-            *.tgz
           draft: false
           prerelease: false
         env:
