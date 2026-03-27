@@ -4,9 +4,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/karin-plugin-reply)](https://www.npmjs.com/package/karin-plugin-reply)
 [![GitHub License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](https://github.com/YlovexLN/karin-plugin-reply/blob/main/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/issues)
 [![GitHub Actions](https://github.com/YlovexLN/karin-plugin-reply/actions/workflows/ci.yml/badge.svg)](https://github.com/YlovexLN/karin-plugin-reply/actions)
+[![GitHub Stars](https://img.shields.io/github/stars/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/stargazers)
 
 一个功能强大的 Karin 关键词回复插件，支持精确匹配、包含匹配、正则匹配三种模式，可为不同群组配置专属回复规则。
 
