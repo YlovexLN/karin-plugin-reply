@@ -1,6 +1,6 @@
 {
   "name": "karin-plugin-reply",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Karin 自定义关键词回复插件，支持群聊/私聊，支持群组专属规则",
   "keywords": [
     "karin",
