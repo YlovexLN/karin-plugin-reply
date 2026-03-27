@@ -1,5 +1,11 @@
 # karin-plugin-reply
 
+## 0.0.8
+
+### Patch Changes
+
+- build: 更新 node-karin 依赖版本至 ^1.15.1
+
 ## 0.0.7
 
 ### Patch Changes
