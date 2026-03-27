@@ -3,7 +3,7 @@
 > Karin 自定义关键词回复插件 | 支持群聊/私聊 | 群组专属规则 | Web UI 配置
 
 [![NPM Version](https://img.shields.io/npm/v/karin-plugin-reply)](https://www.npmjs.com/package/karin-plugin-reply)
-[![GitHub License](https://img.shields.io/github/license/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/blob/main/LICENSE)
+[![GitHub License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](https://github.com/YlovexLN/karin-plugin-reply/blob/main/LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/YlovexLN/karin-plugin-reply)](https://github.com/YlovexLN/karin-plugin-reply/issues)
 [![GitHub Actions](https://github.com/YlovexLN/karin-plugin-reply/actions/workflows/ci.yml/badge.svg)](https://github.com/YlovexLN/karin-plugin-reply/actions)
