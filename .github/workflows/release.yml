@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # 触发条件：推送 v 开头的 tag，如 v0.1.0
+  workflow_dispatch: {}  # 手动触发：发布当前分支 package.json 中的版本号
 
 jobs:
   publish:
@@ -39,6 +40,8 @@ jobs:
       - name: Setup npm authentication
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # ==========================
       # 📝 使用 git-cliff 生成 Changelog（基于 cliff.toml）
@@ -76,7 +79,6 @@ jobs:
       # ==========================
       - name: Publish to npm
         if: steps.check_version.outputs.should_publish == 'true'
-        continue-on-error: true
         run: |
           echo "🚀 Publishing to npm registry..."
           # 预发布版本（如 0.0.9-beta.1）发到对应 dist-tag，避免覆盖 latest
@@ -99,18 +101,29 @@ jobs:
           echo "Package: $PACKAGE_NAME@$PACKAGE_VERSION"
           ls -la *.tgz
 
+      - name: Resolve release tag
+        id: release_tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="v$(node -p "require('./package.json').version")"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "📌 release tag: $TAG"
+
       # ==========================
       # 🚀 创建 GitHub Release，使用自定义日志并附加 npm 包
       # ==========================
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Release ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
+          name: Release ${{ steps.release_tag.outputs.tag }}
+          tag_name: ${{ steps.release_tag.outputs.tag }}
           body_path: ./RELEASE_BODY.md  # 👈 关键：使用 git-cliff 生成的内容
           files: |
             *.tgz
           draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(steps.release_tag.outputs.tag, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

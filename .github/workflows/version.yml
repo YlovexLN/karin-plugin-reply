@@ -88,7 +88,6 @@ jobs:
       - name: Publish to npm
         id: publish
         if: steps.changesets.outputs.hasChangesets == 'true'
-        continue-on-error: true
         run: |
           echo "🚀 Publishing to npm registry..."
           
