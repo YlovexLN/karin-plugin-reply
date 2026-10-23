@@ -34,3 +34,10 @@ dev-start.*
 # 其他
 pnpm-lock.yaml
 .changeset/
+
+# Agent 与工具链配置
+.agents/
+.dsh-ops/
+AGENTS.md
+.gitattributes
+pnpm-workspace.yaml
