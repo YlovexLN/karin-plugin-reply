@@ -53,7 +53,7 @@ process.exit(rel === "" || (!rel.startsWith("..") && !p.isAbsolute(rel)) ? 0 : 1
 
 | 项 | 值 |
 | --- | --- |
-| 包名 / 版本 | `karin-plugin-reply` / `0.0.8` |
+| 包名 / 版本 | `karin-plugin-reply` / `0.0.9` |
 | 形态 | Karin 插件，ESM（`"type": "module"`），GPL-3.0 |
 | 运行时 | Node 24（CI/工具链）+ pnpm 11 |
 | 框架依赖 | `node-karin ^1.18.0`（peerDependency） |
