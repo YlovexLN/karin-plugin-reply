@@ -4,8 +4,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: {}  # 手动发布 package.json 中的当前版本
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   version:
@@ -13,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
-      new_version: ${{ steps.update_version.outputs.new_version }}
+      new_version: ${{ steps.release_version.outputs.new_version }}
     
     steps:
       - name: Checkout
@@ -47,7 +52,7 @@ jobs:
 
       - name: Update version and sync to web.config.js
         id: update_version
-        if: steps.changesets.outputs.hasChangesets == 'true'
+        if: github.event_name == 'push' && steps.changesets.outputs.hasChangesets == 'true'
         run: |
           # 配置 git
           git config user.name "github-actions[bot]"
@@ -78,16 +83,16 @@ jobs:
           echo "✅ Version updated to v${NEW_VERSION}"
           echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Setup npm authentication
-        if: steps.changesets.outputs.hasChangesets == 'true'
+      - name: Resolve release version
+        id: release_version
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION=$(node -p "require('./package.json').version")
+          echo "new_version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📌 version: $VERSION"
 
       - name: Publish to npm
         id: publish
-        if: steps.changesets.outputs.hasChangesets == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.changesets.outputs.hasChangesets == 'true'
         run: |
           echo "🚀 Publishing to npm registry..."
           
@@ -104,14 +109,12 @@ jobs:
           DIST_TAG=$(node -p "const m=require('./package.json').version.match(/-([a-zA-Z]+)/); m ? m[1] : 'latest'")
           echo "📌 dist-tag: $DIST_TAG"
           pnpm publish --no-git-checks --access public --tag "$DIST_TAG"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   release:
     name: GitHub Release
     needs: version
     runs-on: ubuntu-latest
-    if: needs.version.outputs.hasChangesets == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.version.outputs.hasChangesets == 'true'
     
     steps:
       - name: Checkout
