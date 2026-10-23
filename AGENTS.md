@@ -78,6 +78,7 @@ process.exit(rel === "" || (!rel.startsWith("..") && !p.isAbsolute(rel)) ? 0 : 1
 
 | 字段 | 取值 | 默认 |
 | --- | --- | --- |
+| `name` | 字符串，仅用于 Web UI 卡片标题 | 可选 |
 | `keyword` | 字符串；`match: regex` 时为正则源码 | 必填 |
 | `reply` | 字符串或字符串数组（数组按 `\n` 拼接） | 必填 |
 | `match` | `exact` / `contains` / `regex` | `contains` |

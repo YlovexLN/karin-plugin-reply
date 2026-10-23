@@ -45,6 +45,7 @@ pnpm install karin-plugin-reply
 
 | 字段 | 说明 | 取值 | 默认 |
 | --- | --- | --- | --- |
+| `name` | 卡片标题，仅用于区分规则，不参与匹配 | 字符串 | 空（显示关键词） |
 | `keyword` | 触发关键词；正则模式下填写正则源码 | 字符串 | 必填 |
 | `reply` | 回复内容，多行用 `\n` 分隔 | 字符串 | 必填 |
 | `match` | 匹配方式 | `exact` / `contains` / `regex` | `contains` |
