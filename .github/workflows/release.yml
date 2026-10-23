@@ -79,7 +79,10 @@ jobs:
         continue-on-error: true
         run: |
           echo "🚀 Publishing to npm registry..."
-          pnpm publish --no-git-checks --access public
+          # 预发布版本（如 0.0.9-beta.1）发到对应 dist-tag，避免覆盖 latest
+          DIST_TAG=$(node -p "const m=require('./package.json').version.match(/-([a-zA-Z]+)/); m ? m[1] : 'latest'")
+          echo "📌 dist-tag: $DIST_TAG"
+          pnpm publish --no-git-checks --access public --tag "$DIST_TAG"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -108,6 +111,6 @@ jobs:
           files: |
             *.tgz
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
