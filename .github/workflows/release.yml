@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
           # 设置 npm 认证
           scope: '@ylovexln'
@@ -28,7 +28,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 11
 
       - name: Install dependencies
         run: pnpm install

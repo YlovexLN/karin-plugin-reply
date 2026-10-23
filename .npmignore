@@ -33,3 +33,4 @@ dev-start.*
 
 # 其他
 pnpm-lock.yaml
+.changeset/

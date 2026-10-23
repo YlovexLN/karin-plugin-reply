@@ -30,3 +30,9 @@ index.js
 /config/
 # Markdown
 PUBLISH.md
+
+.dsh-ops/
+
+# 本地 Agent 指令（仅本机使用，不提交）
+.agents/prompts/System prompt.md
+.agents/rules/Assistant operating specification.md

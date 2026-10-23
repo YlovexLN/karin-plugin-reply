@@ -26,7 +26,8 @@ try {
   // 支持两种格式：
   // 1. version: '0.0.6'
   // 2. version: getVersion()
-  const versionRegexHardcoded = /version:\s*'[\d.]+'/;
+  // 版本号需兼容预发布/构建元数据，如 0.0.9-beta.1
+  const versionRegexHardcoded = /version:\s*'[^']*'/;
   const versionRegexFunction = /version:\s*getVersion\(\)/;
   const newVersionLine = `version: '${newVersion}'`;
 
