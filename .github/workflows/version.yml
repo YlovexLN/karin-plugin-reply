@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       hasChangesets: ${{ steps.changesets.outputs.hasChangesets }}
+      needsPublish: ${{ steps.changesets.outputs.needsPublish }}
       new_version: ${{ steps.release_version.outputs.new_version }}
     
     steps:
@@ -42,12 +43,22 @@ jobs:
       - name: Check for changesets
         id: changesets
         run: |
-          if [ -z "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
-            echo "hasChangesets=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ No changesets found, skipping version update"
-          else
+          VERSION=$(node -p "require('./package.json').version")
+          if [ -n "$(ls -A .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
             echo "hasChangesets=true" >> $GITHUB_OUTPUT
+            echo "needsPublish=true" >> $GITHUB_OUTPUT
             echo "✅ Found changesets"
+          else
+            echo "hasChangesets=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changesets found"
+            # 本地已把版本提升好（如 pre exit 后）时，只要 npm 上还没有该版本就直接发布
+            if npm view karin-plugin-reply@$VERSION version >/dev/null 2>&1; then
+              echo "needsPublish=false" >> $GITHUB_OUTPUT
+              echo "ℹ️ $VERSION 已在 npm，跳过发布"
+            else
+              echo "needsPublish=true" >> $GITHUB_OUTPUT
+              echo "📦 $VERSION 未发布，将只执行发布"
+            fi
           fi
 
       - name: Update version and sync to web.config.js
@@ -90,9 +101,24 @@ jobs:
           echo "new_version=$VERSION" >> $GITHUB_OUTPUT
           echo "📌 version: $VERSION"
 
+      # 版本已在本地提升好（无 changeset）时，直接发布需要先有对应 tag
+      - name: Ensure release tag
+        if: steps.changesets.outputs.needsPublish == 'true' && steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --tags origin "refs/tags/v$VERSION" | grep -q .; then
+            echo "ℹ️ tag v$VERSION 已存在"
+          else
+            git tag "v$VERSION"
+            git push origin "v$VERSION"
+            echo "✅ 已创建 tag v$VERSION"
+          fi
+
       - name: Publish to npm
         id: publish
-        if: github.event_name == 'workflow_dispatch' || steps.changesets.outputs.hasChangesets == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.changesets.outputs.needsPublish == 'true'
         run: |
           echo "🚀 Publishing to npm registry..."
           
@@ -114,7 +140,7 @@ jobs:
     name: GitHub Release
     needs: version
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || needs.version.outputs.hasChangesets == 'true'
+    if: github.event_name == 'workflow_dispatch' || needs.version.outputs.needsPublish == 'true'
     
     steps:
       - name: Checkout
