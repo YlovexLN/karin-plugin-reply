@@ -120,6 +120,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # 必须检出刚打出的 tag，否则 pack 出来的是 bump 之前的版本号
+          ref: v${{ needs.version.outputs.new_version }}
           fetch-depth: 0
 
       - name: Setup Node.js
